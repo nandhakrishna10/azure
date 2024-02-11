@@ -1,14 +1,14 @@
 <?php
-// PostgreSQL configuration
-//host=cloud-app-meistergen-server.postgres.database.azure.com port=5432 dbname=cloud-app-meistergen-database sslmode=require user=wgwenaesai password=7E8ER7K8DOU8BSY6$
-$dbname = "cloud-app-meistergen-database";
-$dbuser = "wgwenaesai";
-$dbpass = "7E8ER7K8DOU8BSY6$";
-$dbhost = "cloud-app-meistergen-server.postgres.database.azure.com";
+// Azure PostgreSQL configuration
+$dbname = "inter-meistergen-database";
+$dbuser = "azctopeosg";
+$dbpass = "54ZVM31775763R50$";
+$dbhost = "inter-meistergen-server.postgres.database.azure.com";
 $dbport = "5432";
 
 // Create a PDO connection to the PostgreSQL database
 $pdo = new PDO("pgsql:host=$dbhost;port=$dbport;dbname=$dbname", $dbuser, $dbpass);
+
 
 // Function to create the weather_data table if it doesn't exist
 function createWeatherDataTable($pdo) {
@@ -21,15 +21,14 @@ function createWeatherDataTable($pdo) {
         description VARCHAR(255)
     )";
     $pdo->exec($sql);
-    
 }
 
 // Call createWeatherDataTable to create the table if it doesn't exist
 createWeatherDataTable($pdo);
 
 function addWeatherData($pdo, $city, $temperature, $humidity, $windSpeed, $description) {
-    // Convert city name to lowercase
-    $cityLower = strtolower($city);
+    // Convert city name to title case
+    $cityTitleCase = ucwords(strtolower($city));
 
     // SQL query to insert or update weather data
     $sql = "INSERT INTO weather_data (city, temperature, humidity, wind_speed, description)
@@ -39,11 +38,11 @@ function addWeatherData($pdo, $city, $temperature, $humidity, $windSpeed, $descr
                 humidity = EXCLUDED.humidity,
                 wind_speed = EXCLUDED.wind_speed,
                 description = EXCLUDED.description";
-    
+
     // Prepare and execute the SQL statement
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        ':city' => $cityLower, // Use lowercase city name
+        ':city' => $cityTitleCase,
         ':temperature' => $temperature,
         ':humidity' => $humidity,
         ':wind_speed' => $windSpeed,
@@ -55,14 +54,14 @@ function addWeatherData($pdo, $city, $temperature, $humidity, $windSpeed, $descr
 function fetchWeatherData($pdo, $city) {
     // API key for OpenWeatherMap
     $apiKey = "aba6ff9d6de967d5eac6fd79114693cc";
-    
+
     // URL to fetch weather data for the specified city
     $url = "https://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&appid=$apiKey";
-    
+
     // Fetch weather data from the API
     $response = file_get_contents($url);
     $data = json_decode($response, true);
-    
+
     // Extract relevant data from the API response
     $main = $data['main'];
     $weather = $data['weather'][0];
@@ -72,7 +71,7 @@ function fetchWeatherData($pdo, $city) {
     $windSpeed = $wind['speed'];
     $description = $weather['description'];
     $iconCode = $weather['icon']; // Added line to fetch icon code
-    
+
     // Add weather data to the database
     addWeatherData($pdo, $city, $temp, $humidity, $windSpeed, $description);
 
@@ -87,7 +86,6 @@ function fetchWeatherData($pdo, $city) {
         'icon' => $iconCode // Added line to include icon code
     ];
 }
-
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['city'])) {
