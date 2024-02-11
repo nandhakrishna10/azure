@@ -1,8 +1,8 @@
 <?php
 // Azure PostgreSQL configuration
 $dbname = "inter-meistergen-database";
-$dbuser = "azctopeosg";
-$dbpass = "54ZVM31775763R50$";
+$dbuser = "mpuuhrjshv";
+$dbpass = "Y7S72S737U6XA463$";
 $dbhost = "inter-meistergen-server.postgres.database.azure.com";
 $dbport = "5432";
 
