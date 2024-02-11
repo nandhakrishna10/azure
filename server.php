@@ -1,9 +1,10 @@
 <?php
 // PostgreSQL configuration
-$dbname = "postgres";
-$dbuser = "postgres";
-$dbpass = "root";
-$dbhost = "localhost";
+//host=cloud-app-meistergen-server.postgres.database.azure.com port=5432 dbname=cloud-app-meistergen-database sslmode=require user=wgwenaesai password=7E8ER7K8DOU8BSY6$
+$dbname = "cloud-app-meistergen-database";
+$dbuser = "wgwenaesai";
+$dbpass = "7E8ER7K8DOU8BSY6$";
+$dbhost = "cloud-app-meistergen-server.postgres.database.azure.com";
 $dbport = "5432";
 
 // Create a PDO connection to the PostgreSQL database
